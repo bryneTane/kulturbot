@@ -1,4 +1,4 @@
-import dotenv from "dotenv";
+import { ScheduledHandler } from "aws-lambda";
 import { format, isBefore } from "date-fns";
 import { TweetV2, TwitterApi } from "twitter-api-v2";
 import { db } from "./firebase";
@@ -8,13 +8,7 @@ import {
   query,
   Timestamp,
   where,
-  updateDoc,
 } from "firebase/firestore";
-import schedule from "node-schedule";
-
-dotenv.config();
-
-const APP_URL = "https://hostme.space";
 
 const questionsRef = collection(db, "questions");
 
@@ -29,37 +23,7 @@ function processString(str: string) {
   return str.toLowerCase().trim();
 }
 
-async function main() {
-  schedule.scheduleJob({ hour: 20, minute: 30 }, async () => {
-    const q = query(
-      questionsRef,
-      where(
-        "date",
-        "==",
-        format(new Date(Timestamp.now().toMillis()), "yyyy-MM-dd")
-      )
-    );
-
-    const questions = await getDocs(q);
-    if (!questions?.docs?.length) {
-      const message = `Aucune question n'a été proposée pour ce aujourd'hui 🥺\nRendez vous demain ! N'hésite pas à proposer tes questions sur ${APP_URL} 😁`;
-      await twitterClient.v1.tweet(message);
-    } else {
-      for (const question of questions.docs) {
-        const data = question.data();
-        const message = `${data.question}\n1) ${data.prop1}\n2) ${data.prop2}\n3) ${data.prop3}\n4) ${data.prop4}`;
-        const tweets = await twitterClient.v1.tweetThread([
-          message,
-          `Proposé par @${data.username}`,
-        ]);
-        await updateDoc(question.ref, {
-          tweetId: tweets[0].id_str,
-        });
-      }
-    }
-  });
-
-  // schedule.scheduleJob({ hour: 21, minute: 30 }, async () => {
+export const handler: ScheduledHandler = async () => {
   const messages = [];
   let winners = "";
   const q = query(
@@ -116,7 +80,4 @@ async function main() {
       ...messages,
     ]);
   }
-  // });
-}
-
-main().catch((err) => console.log(err));
+};

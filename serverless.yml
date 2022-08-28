@@ -1,0 +1,34 @@
+service: kultur-bot
+
+plugins:
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: "eu-west-3"
+  timeout: 900 # in seconds
+
+  environment:
+    TWITTER_CONSUMER_KEY: ${file(./secrets.json):TWITTER_CONSUMER_KEY}
+    TWITTER_CONSUMER_SECRET: ${file(./secrets.json):TWITTER_CONSUMER_SECRET}
+    TWITTER_ACCESS_TOKEN_KEY: ${file(./secrets.json):TWITTER_ACCESS_TOKEN_KEY}
+    TWITTER_ACCESS_TOKEN_SECRET: ${file(./secrets.json):TWITTER_ACCESS_TOKEN_SECRET}
+    TWITTER_BEARER_TOKEN: ${file(./secrets.json):TWITTER_BEARER_TOKEN}
+    GOOGLE_ACCESS_KEY: ${file(./secrets.json):GOOGLE_ACCESS_KEY}
+    FIREBASE_API_KEY: ${file(./secrets.json):FIREBASE_API_KEY}
+    FIREBASE_AUTH_DOMAIN: ${file(./secrets.json):FIREBASE_AUTH_DOMAIN}
+    FIREBASE_PROJECT_ID: ${file(./secrets.json):FIREBASE_PROJECT_ID}
+    FIREBASE_STORAGE_BUCKET: ${file(./secrets.json):FIREBASE_STORAGE_BUCKET}
+    FIREBASE_MESSAGING_SENDER_ID: ${file(./secrets.json):FIREBASE_MESSAGING_SENDER_ID}
+    FIREBASE_APP_ID: ${file(./secrets.json):FIREBASE_APP_ID}
+
+functions:
+  ask-questions-cron:
+    handler: ./dist/askQuestionsCron.handler
+    events:
+      - schedule: cron(30 18 * * ? *) #run at 18:30 (UTC) every day.
+  publish-results-cron:
+    handler: ./dist/publishResultsCron.handler
+    events:
+      - schedule: cron(30 19 * * ? *) #run at 19:30 (UTC) every day.
