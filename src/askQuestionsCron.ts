@@ -11,7 +11,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-const APP_URL = "http://www.kulturbot.app.s3-website-us-east-1.amazonaws.com/";
+const APP_URL = "https://kulturbot.app";
 
 const questionsRef = collection(db, "questions");
 
