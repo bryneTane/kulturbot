@@ -32,3 +32,15 @@ functions:
     handler: ./dist/publishResultsCron.handler
     events:
       - schedule: cron(30 19 * * ? *) #run at 19:30 (UTC) every day.
+  # incentive-cron:
+  #   handler: ./dist/incentive.handler
+  #   events:
+  #     - schedule: cron(40 10 * * ? *) #run at 10:40 (UTC) every day.
+  rules-reminder-cron:
+    handler: ./dist/rulesReminder.handler
+    events:
+      - schedule: cron(40 18 * * ? *) #run at 18:40 (UTC) every day.
+  database-update-cron:
+    handler: ./dist/databaseUpdateCron.handler
+    events:
+      - schedule: cron(53 15 * * ? *) #run at 18:25 (UTC) every day.

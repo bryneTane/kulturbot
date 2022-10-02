@@ -72,11 +72,11 @@ export const handler: ScheduledHandler = async () => {
           data.question
         }\nRéponse enregistrée par @${data.username} : ${
           data[`prop${data.answer}`]
-        }\n\n Tout le monde est d'accord ? 🤔`
+        }\n\nTout le monde est d'accord ? 🤔`
       );
     }
     await twitterClient.v2.tweetThread([
-      `🎉🎉 C'est l'heure des résultats ! 🎉🎉\n Les gagnants sont :\n\n ${winners}`,
+      `🎉🎉 C'est l'heure des résultats ! 🎉🎉\nLes gagnants sont :\n\n${winners}`,
       ...messages,
     ]);
   }
